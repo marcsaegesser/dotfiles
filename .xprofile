@@ -1,0 +1,17 @@
+#!/bin/bash
+
+feh --bg-scale `feh -U -z Pictures/IMG_4113-new4.jpg | head -1` &
+
+trayer --edge bottom --align right --height 16 --width 192 --widthtype pixel --transparent true &
+
+xscreensaver -no-splash &
+
+xcompmgr -cfCF -D 10 &
+
+dropbox start &
+
+SpiderOak &
+
+##xterm -title Emacs &
+
+##emacs &

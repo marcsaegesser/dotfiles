@@ -1,0 +1,9 @@
+Xft*dpi:        96
+Xft*antialias:  true
+Xft*hinting:    full
+
+Emacs.font: Monospace-10
+
+urxvt*background: Black
+urxvt*foreground: White
+
