@@ -103,7 +103,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   , ((0                   , 0x1008ff11    ), lowerVolume 4 >> return ())  -- Keyboard volume down
   , ((0                   , 0x1008ff13    ), raiseVolume 4 >> return ())  -- Keyboard volume up
   , ((0                   , 0x1008ff12    ), toggleMute >> return ())     -- Keyboard volume mute
-  , ((0                   , xK_Super_L    ), return())     -- Eat Windows key to (useful for Windows VMs) 
   ]
   ++
   [ ((m .|. modm, k), windows $ f i)    -- Shift/Copy window
