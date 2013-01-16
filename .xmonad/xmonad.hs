@@ -28,6 +28,7 @@ import XMonad.Layout.PerWorkspace
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.StackTile
 import XMonad.Layout.Mosaic
+import XMonad.Layout.Circle
 
 import XMonad.Util.EZConfig
 import XMonad.Util.Run
@@ -67,7 +68,7 @@ myManageHook = composeAll
   ,  className =? "Pidgin" <&&> title=? "Buddy List" --> doFloat <+> doShift "float"  -- Pidgen Buddy List to the Float workspace
   ,  className =? "Pidgin"                           --> doFloat                      -- Pidgen Conversation windows float anywhere
   ,  className =? "Gimp"                             --> doFloat <+> doShift "8"
---  ,  fmap ( "Emacs" `isInfixOf` ) className          --> doShift "emacs"
+  ,  fmap ( "Emacs" `isInfixOf` ) className          --> doShift "emacs"
   ,  fmap ( "Skype" `isInfixOf` ) className          --> doFloat <+> doShift "float"
   ,  className =? "Eclipse"                          --> doShift "code"
   ,  className =? "XTerm" <&&> title =? "Emacs"      --> doShift "emacs"
@@ -88,7 +89,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   [ ((modm                , xK_a          ), sendMessage MirrorShrink)
   , ((modm                , xK_z          ), sendMessage MirrorExpand)
   , ((modm                , xK_n          ), namedScratchpadAction myScratchpads "nautilus")
-  , ((modm                , xK_t          ), namedScratchpadAction myScratchpads "htop")
+  , ((modm                , xK_o          ), namedScratchpadAction myScratchpads "htop")
   , ((modm                , xK_s          ), shellPrompt myXPConfig)
   , ((modm                , xK_F2         ), scratchpadSpawnAction conf)  
   , ((modm                , xK_F5         ), lowerVolume 4 >> return ())
@@ -106,8 +107,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   ]
   ++
   [ ((m .|. modm, k), windows $ f i)    -- Shift/Copy window
-  | (i, k) <- zip myWorkspaces  $ [ xK_1..xK_9 ] ++ [ xK_0 ]
-  , (f, m) <- [(W.view, 0), (W.shift, shiftMask), (copy, shiftMask .|. controlMask)]
+  | (i, k) <- zip myWorkspaces $ [ xK_1..xK_9 ] ++ [ xK_0 ]
+  , (f, m) <- [(W.view, 0),                          -- No modifier -> switch to new workspace
+               (W.shift, shiftMask),                 -- Shift modifier -> Shift window to new workspace
+               (copy, shiftMask .|. controlMask)]    -- Ctrl-Shift modifier -> Copy window to new workspace
   ]
   ++
   [ ((modm .|. shiftMask, xK_c ), kill1)
@@ -117,19 +120,18 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   
 myStartupHook = setDefaultCursor xC_left_ptr
 
-myFont = "Inconsolata"
-myFgColor = "#DCDCCC"
-myBgColor = "#3f3f3f"
+-- Xmobar is a script in ~/bin that kills the currently running xmobar and 
+-- launches a new instance.  Without this xmonad --restart loses xmobar.
+-- There ought to be a better way.
 myStatusBar = "Xmobar /home/marc/.xmobarrc"
 
 myLayoutHook = avoidStruts $ smartBorders $ standardLayouts
-  where standardLayouts = tiled ||| mosaic 2 [3,2]  ||| Mirror tiled ||| Full
+  where standardLayouts = tiled ||| mosaic 2 [3,2] ||| Circle  ||| Mirror tiled ||| Full
         tiled = ResizableTall nmaster delta ratio []
         nmaster = 1 
         delta = 0.03
         ratio = 0.6
 
---myLogHook :: Handle -> X ()
 myLogHook myStatusBarPipe =  do
   copies <- wsContainingCopies
   let check ws | ws == "NSP" = ""                                   -- Hide the scratchpad workspace
@@ -145,5 +147,5 @@ myLogHook myStatusBarPipe =  do
 
 
 myXPConfig = defaultXPConfig { position = Top
-                             , searchPredicate = isInfixOf
+                             , searchPredicate = isInfixOf  -- This doesn't seem to work, I'm still only getting prefix matches
                              }
