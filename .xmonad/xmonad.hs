@@ -36,6 +36,7 @@ import XMonad.Util.Cursor
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Scratchpad
 
+import XMonad.Actions.Warp
 import XMonad.Actions.Volume
 import XMonad.Actions.CopyWindow
 
@@ -88,6 +89,7 @@ myWorkspaces = [ "web", "emacs", "code", "vm", "office", "float", "xterms", "8",
 myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   [ ((modm                , xK_a          ), sendMessage MirrorShrink)
   , ((modm                , xK_z          ), sendMessage MirrorExpand)
+  , ((modm                , xK_g          ), warpToWindow (1/2) (1/2))         -- Move pointer to focused window
   , ((modm                , xK_n          ), namedScratchpadAction myScratchpads "nautilus")
   , ((modm                , xK_o          ), namedScratchpadAction myScratchpads "htop")
   , ((modm                , xK_s          ), shellPrompt myXPConfig)
