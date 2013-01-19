@@ -13,5 +13,5 @@ Config  { font = "-*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*"
                         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "%StdinReader% }{ %KORD% <fc=#CCCC00>%eth0%</fc> %cpu% %memory% Vol: %volume% <fc=#57E9FF>%dt% </fc> "
+        , template = "%StdinReader% }{ <fc=#CCCC00>%eth0%</fc> %cpu% %memory% Vol: %volume% %KORD% <fc=#57E9FF>%dt% </fc> "
         }

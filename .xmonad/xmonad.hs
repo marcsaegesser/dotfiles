@@ -28,7 +28,7 @@ import XMonad.Layout.PerWorkspace
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.StackTile
 import XMonad.Layout.Mosaic
-import XMonad.Layout.Circle
+import XMonad.Layout.ThreeColumns
 
 import XMonad.Util.EZConfig
 import XMonad.Util.Run
@@ -57,17 +57,24 @@ main = do
                 , keys		= liftM2 union myKeys (keys defaultConfig)
                 , startupHook	= myStartupHook
                 , logHook	= myLogHook myStatusBarPipe
+                , focusFollowsMouse = False
                 }
 
+                   
 myTerminal = "xterm"
 
 myModMask = mod4Mask
 
+-- List of X11 window classes which should never steal focus
+noStealFocusWins = ["Pidgin"]
+
 myManageHook = composeAll
-  [  className =? "stalonetray"	                     --> doIgnore
+  [  isDialog                                        --> doFloat  
+  ,  className =? "stalonetray"	                     --> doIgnore
   ,  className =? "trayer"                           --> doIgnore
   ,  className =? "Pidgin" <&&> title=? "Buddy List" --> doFloat <+> doShift "float"  -- Pidgen Buddy List to the Float workspace
   ,  className =? "Pidgin"                           --> doFloat                      -- Pidgen Conversation windows float anywhere
+  ,  className =? "Wicd-client.py"                   --> doFloat
   ,  className =? "Gimp"                             --> doFloat <+> doShift "8"
   ,  fmap ( "Emacs" `isInfixOf` ) className          --> doShift "emacs"
   ,  fmap ( "Skype" `isInfixOf` ) className          --> doFloat <+> doShift "float"
@@ -76,7 +83,7 @@ myManageHook = composeAll
   ,  fmap ( "LibreOffice" `isInfixOf` ) (stringProperty "WM_NAME")      --> doShift "office"
   ,  scratchpadManageHookDefault
   ,  namedScratchpadManageHook myScratchpads
-  ]
+  ,  composeAll [className =? c --> doF W.focusDown | c <- noStealFocusWins]  ]
 
 myScratchpads = [
       NS "htop" "xterm -name htop -e htop" (title =? "htop") (customFloating $ W.RationalRect (1/4) (1/6) (1/2) (2/3))
@@ -89,7 +96,7 @@ myWorkspaces = [ "web", "emacs", "code", "vm", "office", "float", "xterms", "8",
 myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   [ ((modm                , xK_a          ), sendMessage MirrorShrink)
   , ((modm                , xK_z          ), sendMessage MirrorExpand)
-  , ((modm                , xK_g          ), warpToWindow (1/2) (1/2))         -- Move pointer to focused window
+  , ((modm                , xK_g          ), warpToWindow (1/2) (1/2))  -- Move pointer to focused window
   , ((modm                , xK_n          ), namedScratchpadAction myScratchpads "nautilus")
   , ((modm                , xK_o          ), namedScratchpadAction myScratchpads "htop")
   , ((modm                , xK_s          ), shellPrompt myXPConfig)
@@ -110,9 +117,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   ++
   [ ((m .|. modm, k), windows $ f i)    -- Shift/Copy window
   | (i, k) <- zip myWorkspaces $ [ xK_1..xK_9 ] ++ [ xK_0 ]
-  , (f, m) <- [(W.view, 0),                          -- No modifier -> switch to new workspace
-               (W.shift, shiftMask),                 -- Shift modifier -> Shift window to new workspace
-               (copy, shiftMask .|. controlMask)]    -- Ctrl-Shift modifier -> Copy window to new workspace
+  , (f, m) <- [ (W.view , 0                         )   -- No modifier -> switch to new workspace
+              , (W.shift, shiftMask                 )   -- Shift modifier -> Shift window to new workspace
+              , (copy   , shiftMask .|. controlMask )   -- Ctrl-Shift modifier -> Copy window to new workspace
+              ]
   ]
   ++
   [ ((modm .|. shiftMask, xK_c ), kill1)
@@ -125,10 +133,10 @@ myStartupHook = setDefaultCursor xC_left_ptr
 -- Xmobar is a script in ~/bin that kills the currently running xmobar and 
 -- launches a new instance.  Without this xmonad --restart loses xmobar.
 -- There ought to be a better way.
-myStatusBar = "Xmobar /home/marc/.xmobarrc"
+myStatusBar = "Xmobar ~/.xmobarrc"
 
 myLayoutHook = avoidStruts $ smartBorders $ standardLayouts
-  where standardLayouts = tiled ||| mosaic 2 [3,2] ||| Circle  ||| Mirror tiled ||| Full
+  where standardLayouts = tiled ||| mosaic 2 [3,2] ||| Mirror tiled ||| ThreeCol 1 (3 / 100) (1 / 2) ||| Full
         tiled = ResizableTall nmaster delta ratio []
         nmaster = 1 
         delta = 0.03
