@@ -5,13 +5,15 @@ Config  { font = "-*-terminus-bold-r-*-*-12-*-*-*-*-*-*-*"
         , lowerOnStart = True
         , commands =    [ Run Memory ["-t","Mem: <usedratio>%"] 10
 			, Run Weather "KORD" ["-t"," ORD:<tempF>F DewPoint:<dewPoint> RH:<rh>% ","-L","50","-H","80","--normal","green","--high","red","--low","lightblue"] 36000
+			, Run Network "wlan0" [] 10
 			, Run Network "eth0" [] 10
+			, Run Battery [ "-t", " B:<left> " ] 600
                         , Run Cpu ["-t", "CPU: <bar> (<user>/<system>)"] 10
                         , Run Date "%a %B %d %I:%M %p" "dt" 60 
-			, Run Com "/home/marc/bin/volume.sh" [] "volume" 10
+			, Run Com "/home/msaegesser/tools/volume.sh" [] "volume" 10
                         , Run StdinReader
                         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "%StdinReader% }{ <fc=#CCCC00>%eth0%</fc> %cpu% %memory% Vol: %volume% %KORD% <fc=#57E9FF>%dt% </fc> "
+        , template = "%StdinReader% }{ %battery% %wlan0% <fc=#CCCC00>%eth0%</fc> %cpu% %memory% Vol: %volume% %KORD% <fc=#57E9FF>%dt%</fc> "
         }
