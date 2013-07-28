@@ -4,7 +4,7 @@ import System.Posix.Env
 import Control.Monad                   (liftM2)
 
 import Data.List                       (isPrefixOf, isInfixOf)
-import Data.Map                        (fromList, union)  
+import Data.Map                        (fromList, union)
 
 import XMonad
 import XMonad.Core
@@ -60,7 +60,7 @@ main = do
                 , focusFollowsMouse = False
                 }
 
-                   
+
 myTerminal = "xterm"
 
 myModMask = mod4Mask
@@ -69,13 +69,15 @@ myModMask = mod4Mask
 noStealFocusWins = ["Pidgin"]
 
 myManageHook = composeAll
-  [  isDialog                                        --> doFloat  
+  [  isDialog                                        --> doFloat
   ,  className =? "stalonetray"	                     --> doIgnore
   ,  className =? "trayer"                           --> doIgnore
   ,  className =? "Pidgin" <&&> title=? "Buddy List" --> doFloat <+> doShift "float"  -- Pidgen Buddy List to the Float workspace
   ,  className =? "Pidgin"                           --> doFloat                      -- Pidgen Conversation windows float anywhere
+  ,  className =? "Spotify"                          --> doFloat <+> doShift "float"  -- Spotify to the float workspace
   ,  className =? "Wicd-client.py"                   --> doFloat
   ,  className =? "Gimp"                             --> doFloat <+> doShift "8"
+  ,  fmap ( "Cinelerra" `isInfixOf` ) className      --> doFloat
   ,  fmap ( "Emacs" `isInfixOf` ) className          --> doShift "emacs"
   ,  fmap ( "Skype" `isInfixOf` ) className          --> doFloat <+> doShift "float"
   ,  className =? "Eclipse"                          --> doShift "code"
@@ -100,13 +102,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   , ((modm                , xK_n          ), namedScratchpadAction myScratchpads "nautilus")
   , ((modm                , xK_o          ), namedScratchpadAction myScratchpads "htop")
   , ((modm                , xK_s          ), shellPrompt myXPConfig)
-  , ((modm                , xK_F2         ), scratchpadSpawnAction conf)  
+  , ((modm                , xK_F2         ), scratchpadSpawnAction conf)
   , ((modm                , xK_F5         ), lowerVolume 4 >> return ())
   , ((modm                , xK_F6         ), raiseVolume 4 >> return ())
   , ((modm                , xK_F11        ), spawn "bin/restart-xcompmgr.sh")  -- Restart xcompmgr because it gets confused often
-  , ((modm                , xK_F12        ), spawn "xscreensaver-command -lock") 
+  , ((modm                , xK_F12        ), spawn "xscreensaver-command -lock")
   , ((modm .|. controlMask, xK_j          ), CWS.nextWS)    -- Cycle through workspaces
-  , ((modm .|. controlMask, xK_k          ), CWS.prevWS)  
+  , ((modm .|. controlMask, xK_k          ), CWS.prevWS)
   , ((modm                , xK_BackSpace  ), focusUrgent)     -- Urgency hints
   , ((modm .|. shiftMask  , xK_BackSpace  ), clearUrgents)
   , ((0                   , xK_Print      ), spawn "scrot")
@@ -127,10 +129,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
   , ((modm              , xK_v ), windows copyToAll)
   , ((modm .|. shiftMask, xK_v ), killAllOtherCopies )
   ]
-  
+
 myStartupHook = setDefaultCursor xC_left_ptr
 
--- Xmobar is a script in ~/bin that kills the currently running xmobar and 
+-- Xmobar is a script in ~/bin that kills the currently running xmobar and
 -- launches a new instance.  Without this xmonad --restart loses xmobar.
 -- There ought to be a better way.
 myStatusBar = "Xmobar ~/.xmobarrc"
@@ -138,7 +140,7 @@ myStatusBar = "Xmobar ~/.xmobarrc"
 myLayoutHook = avoidStruts $ smartBorders $ standardLayouts
   where standardLayouts = tiled ||| mosaic 2 [3,2] ||| Mirror tiled ||| ThreeCol 1 (3 / 100) (1 / 2) ||| Full
         tiled = ResizableTall nmaster delta ratio []
-        nmaster = 1 
+        nmaster = 1
         delta = 0.03
         ratio = 0.6
 
