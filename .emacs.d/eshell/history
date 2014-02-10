@@ -1,0 +1,20 @@
+lf
+ls
+e EventDispatcherBasicImpl.scala
+find-file EventDispatcherBasicImpl.scala
+whoami
+who
+uptime
+clear
+cd ~/work/tvClient/
+./sbt
+lf
+ls
+ll
+ls -CF
+ls
+man ls
+file-file tvclient.log 
+find-file tvclient.log 
+clear
+exit

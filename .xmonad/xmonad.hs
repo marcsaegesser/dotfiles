@@ -50,6 +50,7 @@ main = do
   spawn "synclient PalmDetect=1 MinSpeed=0.3 MaxSpeed=0.3 AccelFactor=0"
   spawn "syndaemon -t -d"
   xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
+<<<<<<< HEAD
     { terminal          = myTerminal
     , workspaces        = myWorkspaces
     , modMask           = myModMask
@@ -61,19 +62,68 @@ main = do
     , focusFollowsMouse = False
     }
 
+||||||| merged common ancestors
+                { terminal	= myTerminal
+                , workspaces	= myWorkspaces
+                , modMask	= myModMask
+                , layoutHook	= myLayoutHook
+                , manageHook	= myManageHook
+                , keys		= liftM2 union myKeys (keys defaultConfig)
+                , startupHook	= myStartupHook
+                , logHook	= myLogHook myStatusBarPipe
+                , focusFollowsMouse = False
+                }
+
+                   
+=======
+                { terminal	= myTerminal
+                , workspaces	= myWorkspaces
+                , modMask	= myModMask
+                , layoutHook	= myLayoutHook
+                , manageHook	= myManageHook
+                , keys		= liftM2 union myKeys (keys defaultConfig)
+                , startupHook	= myStartupHook
+                , logHook	= myLogHook myStatusBarPipe
+                , focusFollowsMouse = False
+                }
+
+
+>>>>>>> origin/master
 myTerminal = "xterm"
 
 myModMask = mod4Mask
 
 myManageHook = composeAll
+<<<<<<< HEAD
   [  className =? "stalonetray"	                     --> doIgnore
+||||||| merged common ancestors
+  [  isDialog                                        --> doFloat  
+  ,  className =? "stalonetray"	                     --> doIgnore
+=======
+  [  isDialog                                        --> doFloat
+  ,  className =? "stalonetray"	                     --> doIgnore
+>>>>>>> origin/master
   ,  className =? "trayer"                           --> doIgnore
   ,  className =? "Pidgin" <&&> title=? "Buddy List" --> doFloat <+> doShift "float"  -- Pidgen Buddy List to the Float workspace
   ,  className =? "Pidgin"                           --> doFloat                      -- Pidgen Conversation windows float anywhere
+<<<<<<< HEAD
   ,  className =? "Spotify"                          --> doFloat <+> doShift "float"
+||||||| merged common ancestors
+  ,  className =? "Wicd-client.py"                   --> doFloat
+=======
+  ,  className =? "Spotify"                          --> doFloat <+> doShift "float"  -- Spotify to the float workspace
+  ,  className =? "Wicd-client.py"                   --> doFloat
+>>>>>>> origin/master
   ,  className =? "Gimp"                             --> doFloat <+> doShift "8"
+<<<<<<< HEAD
   ,  className =? "Wicd-client.py"                   --> doFloat
 --  ,  fmap ( "Emacs" `isInfixOf` ) className        --> doShift "emacs"
+||||||| merged common ancestors
+  ,  fmap ( "Emacs" `isInfixOf` ) className          --> doShift "emacs"
+=======
+  ,  fmap ( "Cinelerra" `isInfixOf` ) className      --> doFloat
+  ,  fmap ( "Emacs" `isInfixOf` ) className          --> doShift "emacs"
+>>>>>>> origin/master
   ,  fmap ( "Skype" `isInfixOf` ) className          --> doFloat <+> doShift "float"
   ,  className =? "Eclipse"                          --> doShift "code"
   ,  className =? "XTerm" <&&> title =? "Emacs"      --> doShift "emacs"
@@ -127,10 +177,22 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = fromList $
 
 myStartupHook = setDefaultCursor xC_left_ptr
 
+<<<<<<< HEAD
 myFont = "Inconsolata"
 myFgColor = "#DCDCCC"
 myBgColor = "#3f3f3f"
 myStatusBar = "Xmobar /home/msaegesser/.xmobarrc"
+||||||| merged common ancestors
+-- Xmobar is a script in ~/bin that kills the currently running xmobar and 
+-- launches a new instance.  Without this xmonad --restart loses xmobar.
+-- There ought to be a better way.
+myStatusBar = "Xmobar ~/.xmobarrc"
+=======
+-- Xmobar is a script in ~/bin that kills the currently running xmobar and
+-- launches a new instance.  Without this xmonad --restart loses xmobar.
+-- There ought to be a better way.
+myStatusBar = "Xmobar ~/.xmobarrc"
+>>>>>>> origin/master
 
 myLayoutHook = avoidStruts $ smartBorders $ standardLayouts
   where standardLayouts = tiled ||| mosaic 2 [3,2]  ||| Mirror tiled ||| Full
@@ -155,5 +217,13 @@ myLogHook myStatusBarPipe =  do
 
 
 myXPConfig = defaultXPConfig { position = Top
+<<<<<<< HEAD
                              , searchPredicate = isInfixOf
                              }
+||||||| merged common ancestors
+                             , searchPredicate = isInfixOf  -- This doesn't seem to work, I'm still only getting prefix matches
+                             }
+=======
+                             , searchPredicate = isInfixOf  -- This doesn't seem to work, I'm still only getting prefix matches
+                             }
+>>>>>>> origin/master
