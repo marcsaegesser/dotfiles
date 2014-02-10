@@ -78,6 +78,7 @@ myManageHook = composeAll
   ,  className =? "Eclipse"                          --> doShift "code"
   ,  className =? "XTerm" <&&> title =? "Emacs"      --> doShift "emacs"
   ,  fmap ( "LibreOffice" `isInfixOf` ) (stringProperty "WM_NAME")      --> doShift "office"
+  ,  isDialog                                        --> doFloat
   ,  scratchpadManageHookDefault
   ,  namedScratchpadManageHook myScratchpads
   ]
